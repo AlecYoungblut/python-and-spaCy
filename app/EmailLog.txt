@@ -1,0 +1,13 @@
+tom.brady@gmail.com
+Hi Dave, I’d like to invest $10,000 with Microsoft and another $15,000 with Amazon. Thanks, Tom.
+<<End>>
+bjohnson@sympatico.ca
+As we discussed, let’s try $8500 on Apple. Hopefully, that’s OK. -Brooke
+<<End>>
+andy.average@gmail.com
+Edward, can you do $50 thousand to Infotech Inc. and another $10,000 with Amazon? Also, let’s try just $5000 for Newcorp stock. Call me if you have any questions.
+<<End>>
+john.public@rogers.com
+I’ve finally decided on $11,200 with Microsoft. Always liked Windows.
+Regards, John
+<<End>>
