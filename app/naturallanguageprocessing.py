@@ -3,14 +3,12 @@ from spacy import displacy
 import itertools
 import os
 import re
+from collections import deque
+from babel.numbers import format_currency
 
 
 def get_output(data):
     test = nlp(data)
-
-    # for token in test:
-    #     print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_,
-    #           token.shape_, token.is_alpha, token.is_stop)
 
     emails = []
     dollar_amounts = []
@@ -18,12 +16,32 @@ def get_output(data):
 
     list_cycle = itertools.cycle(test)
     next(list_cycle)
+
+    list_cycle2 = itertools.cycle(test)
+    next(list_cycle2)
+
+    d = deque(test)
+
     for i in range(len(test)):
         next_element = next(list_cycle)
         if re.match(r"[^@]+@[^@]+\.[^@]+", test[i].text):
             emails.append(test[i])
+
         if(test[i].pos_ == "SYM" and test[i].tag_ == "$"):
-            dollar_amounts.append(next_element)
+            for j in range(len(d)):
+                if(d[j] == next_element):
+                    if(d[j+1].text.lower() == "hundred"):
+                        dollar_amounts.append(
+                            str(int(next_element.text) * 100))
+                    elif(d[j+1].text.lower() == "thousand"):
+                        dollar_amounts.append(
+                            str(int(next_element.text) * 1000))
+                    elif(d[j+1].text.lower() == "million"):
+                        dollar_amounts.append(
+                            str(int(next_element.text) * 1000000))
+                    else:
+                        dollar_amounts.append(next_element.text)
+
         if(test[i].pos_ == "PROPN" and test[i].tag_ == "NNP"):
             if(test[i].dep_ == "compound" and next_element.dep_ == "pobj"):
                 companies.append(f'{test[i]} {next_element}')
@@ -41,7 +59,9 @@ def get_output(data):
     for i in range(len(emails)):
         print(f'{emails[i]}:', end="")
         for j in range(len(companies)):
-            print(f' ${dollar_amounts[j]} to {companies[j]}', end="")
+            temp = format_currency(
+                int(dollar_amounts[j].replace(',', '')), 'USD', locale='en_US')
+            print(f' {temp} to {companies[j]}', end="")
             if(len(companies)-j > 1):
                 print(',', end="")
         print()
@@ -50,7 +70,7 @@ def get_output(data):
     temp = ""
 
     for i in range(len(dollar_amounts)):
-        temp = dollar_amounts[i].text.replace(',', '')
+        temp = dollar_amounts[i].replace(',', '')
         total += float(temp)
 
     return total
@@ -72,5 +92,7 @@ for line in content:
     else:
         overalTotal += get_output(email)
         email = ""
-print(f'Total Requests: ${overalTotal:,}')
+
+overalTotalFormatted = format_currency(overalTotal, 'USD', locale='en_US')
+print(f'Total Requests: {overalTotalFormatted}')
 # displacy.serve(test1, style="dep")
