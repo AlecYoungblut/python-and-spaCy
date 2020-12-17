@@ -30,13 +30,13 @@ def get_output(data):
         if(test[i].pos_ == "SYM" and test[i].tag_ == "$"):
             for j in range(len(d)):
                 if(d[j] == next_element):
-                    if(d[j+1].text.lower() == "hundred"):
+                    if(d[j+1].text.lower() == "hundred" or d[j+1].text.lower() == "hundreds"):
                         dollar_amounts.append(
                             str(int(next_element.text) * 100))
-                    elif(d[j+1].text.lower() == "thousand"):
+                    elif(d[j+1].text.lower() == "thousand" or d[j+1].text.lower() == "thousands"):
                         dollar_amounts.append(
                             str(int(next_element.text) * 1000))
-                    elif(d[j+1].text.lower() == "million"):
+                    elif(d[j+1].text.lower() == "million" or d[j+1].text.lower() == "millions"):
                         dollar_amounts.append(
                             str(int(next_element.text) * 1000000))
                     else:
